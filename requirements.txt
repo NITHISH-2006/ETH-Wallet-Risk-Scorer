@@ -1,0 +1,10 @@
+streamlit==1.42.0
+pandas==2.2.3
+numpy==2.2.1
+scikit-learn==1.6.0
+networkx==3.4.2
+joblib==1.4.2
+python-dotenv==1.0.1
+requests==2.32.3
+matplotlib==3.10.0    # visualizations
+seaborn==0.13.2
