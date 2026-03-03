@@ -3,7 +3,7 @@
 **Give any Ethereum wallet a 0-100 trust score + reasons**  
 Side Quest 1 of My Roadmap
 
-**Live Demo** → (after you deploy)  
+**Live Demo** → ()  
 **Built in - days** as part of Hashira internship prep.
 
 ## Features
