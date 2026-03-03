@@ -1,19 +1,22 @@
-# 🛡️ Wallet Risk Scorer
+# ETH Wallet Risk Scorer
 
-**Give any Ethereum wallet a 0-100 trust score + reasons**  
-Side Quest 1 of My Roadmap
+**Side Quest 1** 
+**Goal**: Give any Ethereum wallet a 0–100 risk score + reasons (like a crypto credit score)
 
-**Live Demo** → ()  
-**Built in - days** as part of Hashira internship prep.
+## Current Status (March 2026)
+- Trained **Isolation Forest** unsupervised — only on 89 normal / legitimate wallets (Binance, Uniswap, Coinbase, etc.)
+- Tested on 12 known bad wallets from real 2025–2026 exploits (rekt.news)
+- Bad wallets now flagged **56–74/100** (medium-high risk)
+- Normal wallets ~30–40/100 (low risk)
+- Real-time Etherscan V2 API + caching + graph features (networkx)
 
-## Features
-- Real-time Etherscan transaction history
-- Graph + tabular feature engineering
-- Isolation Forest anomaly detection
-- Caching (respects 3 calls/sec free tier)
-- Beautiful Streamlit UI with explainable reasons
+## Features Detected
+- High transfers to unseen addresses (draining/exfiltration)
+- Massive early outflow (classic drainer pattern)
+- Sudden recent activity bursts
+- High transaction density
 
-## Quick Start
+## Demo (Streamlit)
+Run locally:
 ```bash
-pip install -r requirements.txt
 streamlit run app.py
