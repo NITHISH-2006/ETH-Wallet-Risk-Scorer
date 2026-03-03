@@ -50,20 +50,3 @@ def fetch_transactions(address: str) -> pd.DataFrame:
     joblib.dump(df, cache_path)
     time.sleep(API_SLEEP)
     return df
-
-    response = requests.get(url, params=params)
-    data = response.json()
-
-    if data.get("status") != "1":
-        raise ValueError(f"Etherscan error: {data.get('message')}")
-
-    df = pd.DataFrame(data["result"])
-    if not df.empty:
-        df["value"] = pd.to_numeric(df["value"], errors="coerce") / 1e18  # ETH
-        df["timeStamp"] = pd.to_datetime(df["timeStamp"], unit="s")
-        df["is_incoming"] = df["to"].str.lower() == address.lower()
-
-    # Cache
-    joblib.dump(df, cache_path)
-    time.sleep(API_SLEEP)  # Respect free tier (3 calls/sec → ~0.33s)
-    return df

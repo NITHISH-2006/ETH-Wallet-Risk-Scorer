@@ -76,7 +76,7 @@ def main():
     
     model = IsolationForest(
         n_estimators=3000,          # more trees = more stable & accurate
-        contamination=0.0001,        # very strict - expect almost zero anomalies in normal data
+        contamination=0.005,        # very strict - expect almost zero anomalies in normal data
         max_samples=1024,
         random_state=42
     )
@@ -93,7 +93,7 @@ def main():
         print("\nDecision scores on known bad wallets (lower = more anomalous):")
         for addr, sc in zip(bad_addrs, bad_scores):
             # Stronger mapping for better separation
-            risk = max(0, min(100, (1 - (sc + 0.5)) * 220))  # ← change from 140 → 220
+            risk = max(0, min(100, (1 - (sc + 0.5)) * 180))  # ← from 140 → 190
             print(f"{addr[:10]}...: {risk:.1f}/100 (raw {sc:.3f})")
     else:
         print("No bad wallets to validate.")

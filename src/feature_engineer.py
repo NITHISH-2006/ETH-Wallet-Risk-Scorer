@@ -44,6 +44,7 @@ def engineer_features(df: pd.DataFrame, address: str) -> pd.DataFrame:
         'outgoing_to_new_ratio_pct': outgoing_to_new_ratio,
         'percent_large_tx': (df['value'] > df['value'].quantile(0.95)).mean() * 100 if not df['value'].empty else 0,
         'has_recent_spike': (df['timeStamp'] > now - pd.Timedelta(days=7)).mean() * 100,
+        'young_wallet_high_activity': 1 if (age_days < 90 and tx_count / age_days > 1000) else 0,
         'early_outflow_ratio': (df[(df['timeStamp'] < df['timeStamp'].min() + pd.Timedelta(days=30)) & (~df['is_incoming'])]['value'].sum() / total_out_eth * 100) if total_out_eth > 0 else 0,
         **extract_graph_features(df, address)
     }

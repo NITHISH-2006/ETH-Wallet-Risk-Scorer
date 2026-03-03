@@ -50,8 +50,12 @@ class WalletRiskModel:
             reasons.append("Very high connectivity (possible mixer/phishing)")
         if row['wallet_age_days'] < 90 and row['tx_count'] > 500:
             reasons.append("Young wallet with massive activity (high risk)")
+        if row.get('cex_mimic_young', 0) == 1:
+            reasons.append("CEX-like high-volume outflow in young wallet (suspicious)")
         if row['early_outflow_ratio'] > 70:
             reasons.append("Most outflow happened in first 30 days (classic drainer pattern)")
+        if row.get('young_wallet_high_activity', 0) == 1:
+            reasons.append("Young wallet with extremely high activity (classic drainer pattern)")
 
         if not reasons:
             reasons.append("Normal activity pattern")
