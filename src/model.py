@@ -28,20 +28,19 @@ class WalletRiskModel:
         if features_df.empty:
             return 50.0, ["No data available"], pd.DataFrame()
 
-        known_cex = {
-        "0x28c6c06298d514db089934071355e5743bf21d60": "Binance hot wallet",
-        "0x742d35cc6634c0532925a3b844bc454e4438f44e": "Coinbase hot wallet",
-        "0xe592427a0aece92de3edee1f18e0157c05861564": "Uniswap V3 Router",
-        "0xf977814e90da44bfa03b6295a0616a897441acec": "Binance another hot",
-        "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad": "Uniswap Universal Router",
-        "0xdef1c0ded9bec7f1a1670819833240f027b25eff": "1inch Aggregator",
-        "0x00000000006c3852cbef3e08e8df289169ede581": "OpenSea Seaport",
-        # Add more known legit addresses if you want
+        # Expanded whitelist for known legitimate / public-figure wallets
+        known_safe = {
+            "0x28c6c06298d514db089934071355e5743bf21d60": "Binance hot wallet",
+            "0x742d35cc6634c0532925a3b844bc454e4438f44e": "Coinbase hot wallet",
+            "0xe592427a0aece92de3edee1f18e0157c05861564": "Uniswap V3 Router",
+            "0xab5801a7d398351b8be11c439e05c5b3259aec9b": "Vitalik Buterin public wallet",
+            "0xf977814e90da44bfa03b6295a0616a897441acec": "Binance another hot wallet",
+            "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad": "Uniswap Universal Router",
+            # Add more if you want (e.g. Aave pool, Curve factory)
         }
 
-        # Pass address from scorer to here (small change needed in scorer.py)
-        if address and address.lower() in known_cex:
-            return 20.0, [f"Known legitimate wallet: {known_cex[address.lower()]}"], features_df
+        if address and address.lower() in known_safe:
+            return 20.0, [f"Known legitimate wallet: {known_safe[address.lower()]}"], features_df
 
         X = self.scaler.transform(features_df)
         raw_score = self.model.decision_function(X)[0]
