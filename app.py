@@ -126,6 +126,15 @@ if st.button("🔍 Get Risk Score", type="primary", use_container_width=True):
         except Exception as e:
             st.error(f"Unexpected error: {str(e)}")
             st.info("Check console or try again.")
+        except ValueError as e:
+            if "No transactions found" in str(e):
+                st.warning("This address has no recorded ETH transactions on mainnet. Risk score set to low (20/100).")
+                score = 20.0
+                reasons = ["No transaction history — likely inactive or token-only wallet"]
+                tx_df = pd.DataFrame()
+            else:
+                st.error(f"Error processing wallet: {str(e)}")
+                st.stop()
 
 # Footer
 st.markdown("---")
