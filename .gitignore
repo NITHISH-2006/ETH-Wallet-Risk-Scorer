@@ -1,8 +1,45 @@
+# Python / Bytecode
 __pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
 venv/
-.env
+.env/
+.venv/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Data & cache (never commit large or temporary data)
 data/cache/
 data/raw/
 data/processed/
-*.pkl
+*.joblib              # temporary joblib dumps
+
+# Models – only ignore large/temporary ones
+models/*.pkl          # ← ignore all .pkl in models/ EXCEPT the final one you want to commit
+!models/isolation_forest_v1.pkl   # ← explicitly INCLUDE your main model (optional but recommended)
+
+# IDE / OS files
+.vscode/
+.idea/
+*.swp
+*.swo
 .DS_Store
+Thumbs.db
+
+# Logs & temp files
+*.log
+tmp/
+temp/
+
+# Jupyter / notebooks (if you use them locally)
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Deployment / cloud
+.streamlit/
