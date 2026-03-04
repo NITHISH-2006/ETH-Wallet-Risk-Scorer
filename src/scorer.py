@@ -16,5 +16,5 @@ def get_wallet_risk(address: str):
     print(f"[DEBUG] Scoring wallet: {address}")
     df = fetch_transactions(address)
     features_df = engineer_features(df, address)
-    score, reasons, df_raw = model.predict_risk(features_df)
+    score, reasons, df_raw = model.predict_risk(features_df, address=address)  # ← added address
     return score, reasons, df_raw

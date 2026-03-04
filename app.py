@@ -58,49 +58,53 @@ address = st.text_input(
 )
 
 # Quick examples
+# Quick examples - use callbacks to safely update the input
 st.caption("Quick test examples:")
-col_ex1, col_ex2, col_ex3 = st.columns(3)
-if col_ex1.button("Test Bad #1"):
+
+def set_bad1():
     st.session_state.address_input = "0x218c572b1ab6065d74bebcb708a3f523d14f7719"
-if col_ex2.button("Test Bad #2"):
+
+def set_bad2():
     st.session_state.address_input = "0x6c8ec8f14be7c01672d31cfa5f2cefeab2562b50"
-if col_ex3.button("Test Normal (Binance)"):
+
+def set_normal():
     st.session_state.address_input = "0x28c6c06298d514db089934071355e5743bf21d60"
+
+col_ex1, col_ex2, col_ex3 = st.columns(3)
+col_ex1.button("Test Bad #1", on_click=set_bad1)
+col_ex2.button("Test Bad #2", on_click=set_bad2)
+col_ex3.button("Test Normal (Binance)", on_click=set_normal)
 
 # ────────────────────────────────────────────────────────────────
 # Run Scoring
 # ────────────────────────────────────────────────────────────────
 if st.button("🔍 Get Risk Score", type="primary", use_container_width=True):
-    if not address.startswith("0x") or len(address) != 42:
-        st.error("Please enter a valid Ethereum address (42 characters, starts with 0x)")
+    if not address:
+        st.warning("Please enter an Ethereum address")
         st.stop()
 
-    with st.spinner("Analyzing on-chain behavior... (may take 5–15 seconds first time)"):
+    if not address.startswith("0x") or len(address) != 42:
+        st.error("Invalid Ethereum address (must be 42 characters starting with 0x)")
+        st.stop()
+
+    with st.spinner("Analyzing on-chain behavior... (5–15 seconds first time)"):
         start_time = time.time()
         try:
             score, reasons, tx_df = get_wallet_risk(address)
             elapsed = time.time() - start_time
 
-            # Show result
             col1, col2 = st.columns([1, 2])
 
             with col1:
                 if score > 70:
-                    delta_color = "HIGH RISK 🔥"
-                    color = "red"
+                    delta = "HIGH RISK 🔥"
                 elif score > 40:
-                    delta_color = "MEDIUM ⚠️"
-                    color = "orange"
+                    delta = "MEDIUM ⚠️"
                 else:
-                    delta_color = "LOW RISK ✅"
-                    color = "green"
+                    delta = "LOW RISK ✅"
 
-                st.metric(
-                    label="Risk Score",
-                    value=f"{score}/100",
-                    delta=delta_color,
-                    delta_color="normal"
-                )
+                st.metric("Risk Score", f"{score}/100", delta=delta)
+
                 st.caption(f"Processed in {elapsed:.1f} seconds")
 
             with col2:
@@ -111,7 +115,6 @@ if st.button("🔍 Get Risk Score", type="primary", use_container_width=True):
                 else:
                     st.info("No specific risk signals detected")
 
-            # Raw preview
             if not tx_df.empty:
                 with st.expander("Raw Transaction Preview (first 10 txs)"):
                     st.dataframe(tx_df.head(10))
@@ -122,7 +125,7 @@ if st.button("🔍 Get Risk Score", type="primary", use_container_width=True):
             st.error(f"Error processing wallet: {str(e)}")
         except Exception as e:
             st.error(f"Unexpected error: {str(e)}")
-            st.info("Try again or check console for details.")
+            st.info("Check console or try again.")
 
 # Footer
 st.markdown("---")
