@@ -39,13 +39,18 @@ def fetch_transactions(address: str) -> pd.DataFrame:
     data = response.json()
 
     if data.get("status") != "1":
-        raise ValueError(f"Etherscan V2 error: {data.get('message')} - Full response: {data}")
-
-    df = pd.DataFrame(data["result"])
-    if not df.empty:
-        df["value"] = pd.to_numeric(df["value"], errors="coerce") / 1e18
-        df["timeStamp"] = pd.to_datetime(df["timeStamp"], unit="s")
-        df["is_incoming"] = df["to"].str.lower() == address.lower()
+        msg = data.get('message', 'Unknown error')
+        if "No transactions found" in msg:
+            print(f"No transactions found for {address} — returning empty DF")
+            df = pd.DataFrame()
+        else:
+            raise ValueError(f"Etherscan error: {msg} - Full: {data}")
+    else:
+        df = pd.DataFrame(data["result"])
+        if not df.empty:
+            df["value"] = pd.to_numeric(df["value"], errors="coerce") / 1e18
+            df["timeStamp"] = pd.to_datetime(df["timeStamp"], unit="s")
+            df["is_incoming"] = df["to"].str.lower() == address.lower()
 
     joblib.dump(df, cache_path)
     time.sleep(API_SLEEP)
